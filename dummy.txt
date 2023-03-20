@@ -1,0 +1,272 @@
+/******************************************************************************
+
+                            Online C Compiler.
+                Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct list
+{
+    int data;
+    struct list *nextNode;
+}list_t;
+
+void addEmpty(list_t **head , int data)
+{
+    list_t *new = (list_t *)malloc(sizeof(list_t));
+    if(new == NULL)
+    {
+        return;
+    }
+    new->data = data;
+    *head = new;
+    new->nextNode = *head;
+}
+
+void add(list_t **head,int data)
+{
+    list_t *new = (list_t *)malloc(sizeof(list_t));
+    if(new == NULL)
+    {
+        return;
+    }
+    
+    new->data = data;
+    
+    new->nextNode = *head;
+    *head = new;
+}
+
+void show(list_t *head)
+{
+    list_t *temp = head;
+    if(temp == NULL)
+    {
+        return;
+    }
+    else
+    {
+        do
+        {
+            printf("%d ->",temp->data);
+            temp = temp->nextNode;
+        }while(temp != NULL);
+        
+        printf("loop\n\r");
+    }
+}
+
+void reverse(list_t **head)
+{
+    if(*head == NULL)
+    {
+        return;
+    }
+    
+    list_t *prev = NULL;
+    list_t *curr = *head;
+    list_t *next = *head;
+    
+    while(curr != NULL)
+    {
+        next = curr->nextNode;
+        curr->nextNode = prev;
+        prev = curr;
+        curr = next;
+    }
+    
+    *head = prev;
+}
+
+void delNthFromLast(list_t *head,int nth)
+{
+    list_t *slow = head;
+    list_t *fast = head;
+
+    while(nth--)
+    {
+        fast = fast->nextNode;
+    }
+    
+    list_t *prev = NULL;
+    while(fast != NULL)
+    {
+        prev = slow;
+        slow = slow->nextNode;
+        fast = fast->nextNode;
+    }
+    
+    prev->nextNode = (prev->nextNode)->nextNode;
+    free(slow);
+}
+
+void swapNode(list_t **head,int x,int y)
+{
+    list_t *prevX = NULL;
+    list_t *currX = *head;
+    list_t *prevY = NULL;
+    list_t *currY = *head;
+    
+    while(x-- && currX->nextNode != NULL)
+    {
+        prevX = currX;
+        currX = currX->nextNode;
+    }
+    
+    while(y-- && currY->nextNode != NULL)
+    {
+        prevY = currY;
+        currY = currY->nextNode;
+    }
+    
+    if(prevX != NULL)
+    {
+        prevX->nextNode = currY; 
+    }
+    else
+    {
+        *head = currY;
+    }
+    
+    if(prevY != NULL)
+    {
+        prevY->nextNode = currX;
+    }
+    else
+    {
+        *head =  currX;
+    }
+    
+    list_t *temp = currY->nextNode;
+    currY->nextNode = currX->nextNode;
+    currX->nextNode = temp;
+    
+}
+
+void detectLoop(list_t *head)
+{
+    list_t *slow = head;
+    list_t *fast = head;
+    
+    if(head == NULL)
+    {
+        return;
+    }
+    
+    while(slow != NULL && fast != NULL && fast->nextNode != NULL)
+    {
+        slow = slow->nextNode;
+        fast = (fast->nextNode)->nextNode;
+        
+        if(slow == fast)
+        {
+            printf("loop\r\n");            
+        }
+
+    }
+    
+    printf("no loop\r\n");
+}
+
+list_t *loopStart(list_t *head)
+{
+    list_t *slow = head;
+    list_t *fast = head;
+    
+    if(head == NULL)
+    {
+        return NULL;
+    }
+    
+    while(slow != NULL && fast != NULL && fast->nextNode != NULL)
+    {
+        slow = slow->nextNode;
+        fast = (fast->nextNode)->nextNode;
+        if(slow == fast)
+        {
+            break;
+        }
+    }
+    
+    if(slow != fast)
+    {
+        return NULL;
+    }
+    
+    slow = head;
+    if(slow == fast)
+    {
+    while(fast->nextNode != slow)
+    {
+        fast = fast->nextNode;
+    }
+    }
+    else
+    {
+     while(slow->nextNode != fast->nextNode)
+     {
+         slow = slow->nextNode;
+         fast = fast->nextNode;
+     }
+    }
+    
+    fast->nextNode = NULL;
+    return fast;
+}
+
+void sortList(list_t *head)
+{
+    list_t *lptr = NULL;
+    list_t *sptr = head;
+    int swapped = 0;
+    int temp = 0;
+    
+    do
+    {
+        swapped = 0;
+        sptr = head;
+        
+        while(sptr->nextNode != lptr)
+        {
+            if( (sptr->data) > ((sptr->nextNode)->data) )
+            {
+                temp = sptr->data;
+                sptr->data = (sptr->nextNode)->data;
+                (sptr->nextNode)->data = temp;
+                
+                swapped = 1;
+            }
+            
+            sptr = sptr->nextNode;
+        }
+        
+        lptr = sptr;
+        
+    }while(swapped);
+}
+
+int main()
+{
+    list_t *test = NULL;
+
+    // addEmpty(&test,1);
+    add(&test,1);
+    add(&test,2);
+    add(&test,6);
+    add(&test,4);
+    add(&test,5);
+    
+    show(test);
+    sortList(test);
+    // reverse(&test);
+    // delNthFromLast(test,2);
+    // swapNode(&test,1,2);
+    show(test);
+    
+    return 0;
+}
+
